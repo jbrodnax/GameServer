@@ -24,8 +24,8 @@ then
 fi
 
 echo "Copying source files..."
-cp ./FlaskWSS/*.py $PROJ_PATH
-cp ./FlaskWSS/setup.sh $ROOT_PATH
+cp ./*.py $PROJ_PATH
+cp ./setup.sh $ROOT_PATH
 
 echo "Finished."
 echo "If deps have not been installed in the env, run:\npip install flask flask-sock flask-sqlalchemy flask-login"
