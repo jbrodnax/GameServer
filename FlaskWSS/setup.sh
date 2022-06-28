@@ -7,5 +7,5 @@ python3 -m venv venvtest
 source ./venvtest/bin/activate
 
 ## From inside venv
-pip install flask flask-sock
+pip install flask flask-sock flask-sqlalchemy flask-login
 flask run --host=0.0.0.0
