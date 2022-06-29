@@ -1,9 +1,6 @@
-from flask_sock import Sock
-from . import app
+from . import socketio
 
-sock = Sock(app)
-
-@sock.route('/wshandler')
+@socketio.on('text', namespace='/wshandler')
 def wshandler(ws):
     while True:
         data = ws.receive()
