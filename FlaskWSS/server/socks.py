@@ -1,6 +1,6 @@
-from . import socketio
+from . import sock
 
-@socketio.on('text', namespace='/wshandler')
+@sock.route('/wshandler')
 def wshandler(ws):
     while True:
         data = ws.receive()

@@ -1,19 +1,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO
+from flask_sock import Sock
 
 # Init SQLAlchemy
 db = SQLAlchemy()
-socketio = SocketIO()
+sock = Sock()
 
-def create_app():
+def create_app(debug=False):
     app = Flask(__name__)
 
     # TKTK - move key to config file
     app.config['SECRET_KEY'] = 'quackenKraken'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+    app.debug = debug
     
-
     db.init_app(app)
 
     # blueprint for auth routes
@@ -24,6 +24,6 @@ def create_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    socketio.init_app(app)
+    sock.init_app(app)
 
     return app
