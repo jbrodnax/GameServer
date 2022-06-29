@@ -4,7 +4,7 @@ from flask_sock import Sock
 
 # Init SQLAlchemy
 db = SQLAlchemy()
-sock = Sock()
+#sock = Sock()
 
 def create_app():
     app = Flask(__name__)
@@ -14,7 +14,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
     db.init_app(app)
-    sock.init_app(app)
+    #sock.init_app(app)
 
     # blueprint for auth routes
     from .auth import auth as auth_blueprint

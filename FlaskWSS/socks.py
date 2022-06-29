@@ -1,5 +1,7 @@
-from flask import Blueprint
-from . import db, sock
+from flask_sock import Sock
+from . import app
+
+sock = Sock(app)
 
 @sock.route('/wshandler')
 def wshandler(ws):
