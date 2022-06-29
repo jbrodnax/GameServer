@@ -24,8 +24,4 @@ def create_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    # blueprint for websocket routes
-    from .socks import socks as socks_blueprint
-    app.register_blueprint(socks_blueprint)
-
     return app

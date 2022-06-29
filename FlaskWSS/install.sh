@@ -4,7 +4,7 @@
 # pip install python3.8-venv
 # 
 
-ROOT_PATH="~/flask-game-server"
+ROOT_PATH="/home/ubuntu/flask-game-server"
 PROJ_PATH="$ROOT_PATH/project"
 VENV_NAME="venv-server"
 VENV_PATH="$ROOT_PATH/$VENV_NAME"

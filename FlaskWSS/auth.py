@@ -8,5 +8,5 @@ def login():
     return 'Login'
 
 @auth.route('/signup')
-def login():
+def signup():
     return 'Signup'
