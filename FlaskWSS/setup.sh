@@ -7,6 +7,4 @@
 
 ## From inside venv
 echo "run:"
-echo 'export FLASK_APP=project'
-echo 'export FLASK_DEBUG=1'
-echo 'flask run --host=0.0.0.0'
+echo 'export FLASK_APP=server.py flask run'

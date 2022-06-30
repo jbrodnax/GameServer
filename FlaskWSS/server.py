@@ -4,4 +4,4 @@ from server import create_app, sock
 app = create_app(debug=True)
 
 if __name__ == '__main__':
-    sock.run(app)
+    app.run()
