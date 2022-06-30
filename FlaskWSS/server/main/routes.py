@@ -1,7 +1,6 @@
 from flask import Blueprint
-from . import db
-
-main = Blueprint('main', __name__)
+from .. import db
+from . import main
 
 @main.route('/')
 def index():

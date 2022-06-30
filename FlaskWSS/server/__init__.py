@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_sock import Sock
+from flask_socketio import SocketIO
 
 # Init SQLAlchemy
 db = SQLAlchemy()
-sock = Sock()
+socketio = SocketIO()
 
 def create_app(debug=False):
     app = Flask(__name__)
@@ -24,6 +24,6 @@ def create_app(debug=False):
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    sock.init_app(app)
+    socketio.init_app(app)
 
     return app

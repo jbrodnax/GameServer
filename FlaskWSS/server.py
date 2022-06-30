@@ -1,7 +1,7 @@
 #!/bin/env python
-from server import create_app, sock
+from server import create_app, socketio
 
 app = create_app(debug=True)
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
