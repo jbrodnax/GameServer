@@ -12,6 +12,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 25}
+    app.debug = True
 
     db.init_app(app)
     sock.init_app(app)
@@ -21,7 +22,7 @@ def create_app():
     app.register_blueprint(auth_blueprint)
 
     # blueprint for non-auth parts of app
-    from .sock import socka as socka_blueprint
-    app.register_blueprint(socka_blueprint)
+    #from .sock import socka as socka_blueprint
+    #app.register_blueprint(socka_blueprint)
 
     return app
