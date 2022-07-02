@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_socketio import SocketIO
+from flask_cors import CORS
 
 socketio = SocketIO()
 
@@ -7,6 +8,7 @@ socketio = SocketIO()
 def create_app(debug=False):
     """Create an application."""
     app = Flask(__name__)
+    cors = CORS(app, resources={r"/*": {"origins": "*"}})
     app.debug = debug
     app.config['SECRET_KEY'] = 'gjr39dkjn344_!67#'
 
