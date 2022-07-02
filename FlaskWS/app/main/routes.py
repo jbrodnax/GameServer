@@ -15,6 +15,4 @@ def chat():
     the session."""
     name = session.get('name', '')
     room = session.get('room', '')
-    if name == '' or room == '':
-        return redirect(url_for('.index'))
     return render_template('chat.html', name=name, room=room)
