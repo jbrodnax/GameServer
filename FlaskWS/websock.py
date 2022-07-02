@@ -1,5 +1,7 @@
 from flask import Blueprint
-from . import sock
+from flask_sock import Sock
+
+sock = Sock()
 
 @sock.route('/echo')
 def echo(ws):

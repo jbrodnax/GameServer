@@ -1,10 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_sock import Sock
+
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
-sock = Sock()
 
 def create_app():
     app = Flask(__name__)
@@ -15,14 +14,13 @@ def create_app():
     app.debug = True
 
     db.init_app(app)
-    sock.init_app(app)
 
     # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
     # blueprint for non-auth parts of app
-    #from .sock import socka as socka_blueprint
-    #app.register_blueprint(socka_blueprint)
+    from .websock import sock
+    sock.init_app(app)
 
     return app
