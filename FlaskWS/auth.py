@@ -1,5 +1,5 @@
 from crypt import methods
-from flask import Blueprint, render_template, request, jsonify, g
+from flask import Blueprint, render_template, make_response, request, jsonify, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from .models import User
@@ -30,7 +30,7 @@ def auth_required(fn):
 # Return token and 'success':True/False
 @auth.route('/login', methods=['POST'])
 def login():
-    resp = {
+    resp_body = {
         'success':False,
         'token':None
     }
@@ -40,20 +40,21 @@ def login():
     password = request.form.get('password')
 
     if not name or not password:
-        return resp
+        return resp_body
     
     # Query for the user so we can check creds
     user = User.query.filter_by(name=name).first()
     if not user or not check_password_hash(user.password, password):
-        return resp
+        return resp_body
     
     # Creds checked out. Generate session id (uuid4), 
     # save it to the User db, and return it to the client
-    resp['token'] = str(uuid.uuid4())
-    resp['success'] = True
-    user.sessionId = resp['token']
+    resp_body['token'] = str(uuid.uuid4())
+    resp_body['success'] = True
+    user.sessionId = resp_body['token']
     db.session.commit()
 
+    resp = make_response(jsonify(resp_body), 200)
     return resp
 
 
@@ -61,7 +62,7 @@ def login():
 # Return 'success':True/False
 @auth.route('/signup', methods=['POST'])
 def signup():
-    resp = {
+    resp_body = {
         'success':False
     }
 
@@ -70,19 +71,20 @@ def signup():
     password = request.form.get('password')
 
     if not name or not password:
-        return resp
+        return resp_body
     
     # Query name to see if it already exists
     user = User.query.filter_by(name=name).first()
     if user:
-        return resp
+        return resp_body
     
     # Create a new user in the database.
     new_user = User(name=name, password=generate_password_hash(password, method='sha256'))
     db.session.add(new_user)
     db.session.commit()
 
-    resp['success']=True
+    resp_body['success']=True
+    resp = make_response(jsonify(resp_body), 200)
     return resp
 
 
@@ -91,7 +93,7 @@ def signup():
 @auth.route('/logout', methods=['POST'])
 @auth_required
 def logout():
-    resp = {
+    resp_body = {
         'success':False
     }
 
@@ -100,9 +102,10 @@ def logout():
     user.sessionId = None
     db.session.commit()
 
-    resp['success'] = True
+    resp_body['success'] = True
 
-    return jsonify(resp), 200
+    resp = make_response(jsonify(resp_body), 200)
+    return resp
 
 
 # Testing interface for websocket API
