@@ -1,6 +1,5 @@
 from flask import Blueprint
 from flask_sock import Sock
-from . import myapp
 from .wsconnection import wsconnection
 
 sock = Sock()
@@ -13,13 +12,13 @@ def echo(ws):
     try:
         data = wsconn.formatdata(rawdata)
     except Exception as e:
-        myapp.logger.info('Exception: %s', e)
+        print(e)
         return
     
     try:
         wsconn.authenticate(data)
     except Exception as e:
-        myapp.logger.info('Exception: %s', e)
+        print(e)
         return
     
     while True:
