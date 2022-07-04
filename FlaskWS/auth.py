@@ -1,11 +1,31 @@
 from crypt import methods
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify, g
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 from .models import User
 from . import db
 import uuid
 
 auth = Blueprint('auth', __name__)
+
+# Decorator ensures a valid session token exists in the request.
+# Sets flask.g.user to the verified user for downstream consumption
+# Returns 403:'success':False on failed auth
+def auth_required():
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args, **kwargs):
+            token = request.form.get('token')
+            if not token:
+                return jsonify(success=False), 403
+            
+            user = User.query.filter_by(sessionId=token).first()
+            if not user:
+                return jsonify(success=False), 403
+            g.user = user
+            return fn(*args, **kwargs)
+        return decorator
+    return wrapper
 
 
 # Login and start session. Token is used for WS connection
@@ -32,6 +52,7 @@ def login():
     # Creds checked out. Generate session id (uuid4), 
     # save it to the User db, and return it to the client
     resp['token'] = str(uuid.uuid4())
+    resp['success'] = True
     user.sessionId = resp['token']
     db.session.commit()
 
@@ -70,11 +91,13 @@ def signup():
 # Session logout
 # Return 'success':True/False
 @auth.route('/logout', methods=['POST'])
+@auth_required
 def logout():
     resp = {
         'success':False
     }
 
+    '''
     # Get the sessionID from the request body
     token = request.form.get('token')
 
@@ -85,8 +108,9 @@ def logout():
     user = User.query.filter_by(sessionId=token).first()
     if not user:
         return resp
-
+    '''
     # Remove the sessionId from that user's db entry
+    user = g.user
     user.sessionId = None
     db.session.commit()
 
