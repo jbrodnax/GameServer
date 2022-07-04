@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask_sock import Sock
-from . import wsconnection
+from . import myapp
+from .wsconnection import wsconnection
 
 sock = Sock()
 
@@ -8,12 +9,19 @@ sock = Sock()
 def echo(ws):
     wsconn = wsconnection()
     rawdata = ws.receive()
-    data = wsconn.formatdata(rawdata)
-    if not data:
-        return
-    if wsconn.authenticate(data) is False:
-        return
 
+    try:
+        data = wsconn.formatdata(rawdata)
+    except Exception as e:
+        myapp.logger.info('Exception: %s', e)
+        return
+    
+    try:
+        wsconn.authenticate(data)
+    except Exception as e:
+        myapp.logger.info('Exception: %s', e)
+        return
+    
     while True:
         data = ws.receive()
         if data == 'close':

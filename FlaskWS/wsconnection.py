@@ -1,6 +1,23 @@
 import json
+import copy
 from .models import User
 from . import db
+
+class InvalidJSON(Exception):
+    def __init__(self, message) -> None:
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f'Invalid JSON format. Reason -> {self.message}'
+
+
+class AuthenticationFailed(Exception):
+    def __init__(self, message) -> None:
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f'Authentication failed. Reason -> {self.message}'
+
 
 class wsconnection:
     def __init__(self) -> None:
@@ -10,16 +27,17 @@ class wsconnection:
         try:
             data = json.loads(rawdata)
         except Exception as e:
-            print('ws request contain invalid data: '+e)
-            return None
+            raise InvalidJSON('%s' % (e))
         
         return data
 
     def authenticate(self, data) -> bool:
         token = data['token']
         user = User.query.filter_by(sessionId=token).first()
+
         if not user:
-            return False
+            raise AuthenticationFailed('Invalid authentication token.')
+
         return True
         
 

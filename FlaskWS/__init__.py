@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
+myapp = None
 
 def create_app():
     app = Flask(__name__)
@@ -23,4 +24,5 @@ def create_app():
     from .websock import sock
     sock.init_app(app)
 
+    myapp = app
     return app
