@@ -11,21 +11,19 @@ auth = Blueprint('auth', __name__)
 # Decorator ensures a valid session token exists in the request.
 # Sets flask.g.user to the verified user for downstream consumption
 # Returns 403:'success':False on failed auth
-def auth_required():
-    def wrapper(fn):
-        @wraps(fn)
-        def decorator(*args, **kwargs):
-            token = request.form.get('token')
-            if not token:
-                return jsonify(success=False), 403
-            
-            user = User.query.filter_by(sessionId=token).first()
-            if not user:
-                return jsonify(success=False), 403
-            g.user = user
-            return fn(*args, **kwargs)
-        return decorator
-    return wrapper
+def auth_required(fn):
+    @wraps(fn)
+    def wrap(*args, **kwargs):
+        token = request.form.get('token')
+        if not token:
+            return jsonify(success=False), 403
+        
+        user = User.query.filter_by(sessionId=token).first()
+        if not user:
+            return jsonify(success=False), 403
+        g.user = user
+        return fn(*args, **kwargs)
+    return wrap
 
 
 # Login and start session. Token is used for WS connection
@@ -97,18 +95,6 @@ def logout():
         'success':False
     }
 
-    '''
-    # Get the sessionID from the request body
-    token = request.form.get('token')
-
-    if not token:
-        return resp
-    
-    # Query for user that has the supplied session id
-    user = User.query.filter_by(sessionId=token).first()
-    if not user:
-        return resp
-    '''
     # Remove the sessionId from that user's db entry
     user = g.user
     user.sessionId = None
@@ -116,8 +102,11 @@ def logout():
 
     resp['success'] = True
 
-    return resp
+    return jsonify(resp), 200
 
+
+# Testing interface for websocket API
 @auth.route('/')
+@auth_required
 def index():
     return render_template('index.html')
